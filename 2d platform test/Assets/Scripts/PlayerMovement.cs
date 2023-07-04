@@ -83,6 +83,11 @@ public class PlayerMovement : MonoBehaviour
         {
             state = "Transformation";
         }
+
+        if (IsGliding)
+        {
+            state = "Mage_Gliding";
+        }
         SetAnimation(state);
     }
 
@@ -140,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
 
             if(IsSwitching)
             {
-                Freeze();
+                // Freeze();
             }
 
             Invoke("EndSwitching", switchTimer);
