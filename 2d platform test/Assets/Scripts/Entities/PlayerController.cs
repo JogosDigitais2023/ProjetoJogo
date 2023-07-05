@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rigidBody;
     private Animator animator;
     private SpriteRenderer sprite;
     private BoxCollider2D coll;
-
+    private LineRenderer line;
+    private DistanceJoint2D distanceJoint;
+    private ClosestTargetDetector closestTargetDetector;
     public bool IsGliding { get; set; } = false;
     public bool IsSwitching { get; set; } = false;
 
@@ -35,6 +37,12 @@ public class PlayerMovement : MonoBehaviour
     private string currentState;
     private string state;
 
+    //Inputs
+    const string Jump = "Jump";
+    const string Switch = "Fire1";
+    const string Skill1 = "Fire2";
+    const string Skill2 = "Fire3";
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -42,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+        distanceJoint = GetComponent<DistanceJoint2D>();
+        line = GetComponent<LineRenderer>();
+        closestTargetDetector = GetComponent<ClosestTargetDetector>();
     }
 
     // Update is called once per frame
@@ -115,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case CharacterState.slinger:
                 Dash();
+                Swing();
 
                 idle = "Slinger_Idle";
                 running = "Slinger_Running";
@@ -126,9 +138,7 @@ public class PlayerMovement : MonoBehaviour
 
     void SwitchCharacter()
     {
-        var isSwitchKeyDown = Input.GetButtonDown("Fire2");
-
-        if (isSwitchKeyDown)
+        if (Input.GetButtonDown(Switch))
         {
             IsSwitching = true;
             if (characterState == CharacterState.mage)
@@ -156,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
     {
         IsSwitching = false;
     }
+
     private void Respawn()
     {
         if (Input.GetKeyDown("return"))
@@ -167,12 +178,12 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         dirX = Input.GetAxisRaw("Horizontal");
-        //runner mode
+        ////runner mode
         rigidBody.velocity = new Vector2(moveSpeed * dashSpeed, rigidBody.velocity.y);
 
         //normal mode
         //rigidBody.velocity = new Vector2(moveSpeed * dirX * dashSpeed, rigidBody.velocity.y);
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetButtonDown(Jump) && IsGrounded())
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
         }
@@ -188,12 +199,12 @@ public class PlayerMovement : MonoBehaviour
         if (IsGliding && rigidBody.velocity.y < 0f && Mathf.Abs(rigidBody.velocity.y) > m_FallSpeed)
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Sign(rigidBody.velocity.y) * m_FallSpeed);
 
-        if (Input.GetButtonDown("Fire1") && !IsGrounded())
+        if (Input.GetButtonDown(Skill1) && !IsGrounded())
         {
             IsGliding = true;
         }
 
-        if((Input.GetButtonUp("Fire1") && !IsGrounded()) || IsGrounded())
+        if (Input.GetButtonUp(Skill1) && !IsGrounded() || IsGrounded())
         {
             IsGliding = false;
         }
@@ -204,8 +215,7 @@ public class PlayerMovement : MonoBehaviour
         switch (dashState)
         {
             case DashState.Ready:
-                var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-                if (isDashKeyDown && IsGrounded())
+                if (Input.GetButtonDown(Skill1) && IsGrounded())
                 {
                     savedVelocity = rigidBody.velocity;
                     //rigidBody.velocity = new Vector2(rigidBody.velocity.x * 3f, rigidBody.velocity.y);
@@ -236,6 +246,34 @@ public class PlayerMovement : MonoBehaviour
                 break;
         }
     }
+
+    public void Swing()
+    {
+        if (Input.GetButtonDown(Skill2) && closestTargetDetector.target != null)
+        {
+            Vector2 targetPosition = closestTargetDetector.target.transform.position;
+
+            line.SetPosition(0, targetPosition);
+            line.SetPosition(1, transform.position);
+            distanceJoint.connectedAnchor = targetPosition;
+            distanceJoint.enabled = true;
+            line.enabled = true;
+            closestTargetDetector.arrow.SetActive(false);
+            Debug.Log("swingin'");
+        }
+        else if (Input.GetButtonUp(Skill2))
+        {
+            distanceJoint.enabled = false;
+            line.enabled = false;
+            Debug.Log("not swingin'");
+        }
+
+        if (distanceJoint.enabled)
+        {
+            line.SetPosition(1, transform.position);
+        }
+    }
+
     private void Freeze()
     {
         Time.timeScale = 0;
