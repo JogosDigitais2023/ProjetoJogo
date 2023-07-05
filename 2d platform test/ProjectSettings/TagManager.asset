@@ -42,9 +42,18 @@ TagManager:
   - name: Background
     uniqueID: 4218187017
     locked: 0
+  - name: Ground_Back_1
+    uniqueID: 515522685
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: Terrain
     uniqueID: 2720009541
+    locked: 0
+  - name: Ground
+    uniqueID: 2581279233
+    locked: 0
+  - name: Ground_Front_1
+    uniqueID: 572868975
     locked: 0
