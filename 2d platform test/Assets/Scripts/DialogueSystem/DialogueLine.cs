@@ -10,12 +10,23 @@ public class DialogueLine : DialogueBaseClass
     [SerializeField] private Color color;
     [SerializeField] private TMP_FontAsset font;
     [SerializeField] private float delay;
+    [SerializeField] private float delayBetweenLines;
+    [SerializeField] private Sprite characterSprite;
+    [SerializeField] private Image imageHolder;
+
     private TextMeshProUGUI textHolder;
+
+    private void Awake()
+    {
+        textHolder = GetComponent<TextMeshProUGUI>();
+        textHolder.text = "";
+        imageHolder.sprite = characterSprite;
+        imageHolder.preserveAspect = true;
+    }
 
     private void Start()
     {
-        textHolder = GetComponent<TextMeshProUGUI>();
-
-        StartCoroutine(WriteText(input, textHolder, color, font, delay));
+        StartCoroutine(WriteText(input, textHolder, color, font, delay, delayBetweenLines));
     }
 }
+ 
