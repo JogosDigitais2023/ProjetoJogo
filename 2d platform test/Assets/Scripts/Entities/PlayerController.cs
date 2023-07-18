@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Componentes
     private Rigidbody2D rigidBody;
     private Animator animator;
     private SpriteRenderer sprite;
@@ -11,37 +12,53 @@ public class PlayerController : MonoBehaviour
     private LineRenderer line;
     private DistanceJoint2D distanceJoint;
     private ClosestTargetDetector closestTargetDetector;
+
+    // Checadores de estado
     public bool IsGliding { get; set; } = false;
     public bool IsSwitching { get; set; } = false;
+    public bool IsDashing { get; set; } = false;
+    public bool IsJumping { get; set; } = false;
+    public bool IsSwinging { get; set; } = false;
 
+    // Parâmetros de jogo
+    [SerializeField] private LayerMask jumpableGround;
+    [SerializeField] private float canJumpTimer = 0.1f;
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float jumpForce = 27f;
     [SerializeField] private float m_FallSpeed = 0f;
-    [SerializeField] private LayerMask jumpableGround;
+    [SerializeField] private float switchTimer = 0.1f;
+    [SerializeField] private float cutJumpHeight = 0.5f;
+    [SerializeField] private float maxSwing = 1f;
+    [SerializeField] private float acceleration = 1f;
+    [SerializeField] private float decceleration = 1f;
+    [SerializeField] private float velPower = 1f;
+    [SerializeField] private float dashSpeed = 5f;
+    [SerializeField] private float swingBoost = 1.5f;
 
+    // Variáveis auxiliares
     private float dirX;
-    public DashState dashState;
-    private CharacterState characterState;
-    public Vector2 savedVelocity;
-    public float dashTimer = 0;
-    public float maxDash = 1f;
-    public float dashSpeed = 1;
+    private Vector2 savedVelocity;
+    private float swingTimer = 0f;
+    private float dashTimer = 0;
+    private float maxDash = 1f;
+    private float lastJumpedTime = 0;
+    private float lastGroundedTime = 0;
     
-    [SerializeField] public float switchTimer = 0.1f;
+    // Enums
+    private DashState dashState;
+    private CharacterState characterState;
 
     // Animações
     private string idle;
     private string running;
     private string jumping;
     private string falling;
+    private string swinging;
+    private string dashing = "Warrior_Dashing";
+    private string gliding = "Mage_Gliding";
+    private string switching = "Transformation";
     private string currentState;
     private string state;
-
-    //Inputs
-    const string Jump = "Jump";
-    const string Switch = "Fire1";
-    const string Skill1 = "Fire2";
-    const string Skill2 = "Fire3";
 
     // Start is called before the first frame update
     private void Start()
@@ -60,21 +77,22 @@ public class PlayerController : MonoBehaviour
     {
         UpdateCharacterState();
         Movement();
+        Jump();
         Respawn();
         UpdateAnimationState();
     }
 
     private void UpdateAnimationState()
     {
-        if (rigidBody.velocity.x > 0f)
+        if (rigidBody.velocity.x > 0.1f)
         {
             state = running;
             sprite.flipX = false;
         }
-        else if (rigidBody.velocity.x < 0f)
+        else if (rigidBody.velocity.x < 0.1f)
         {
             state = running;
-            sprite.flipX = true;
+            //sprite.flipX = true;
         }
         else
         {
@@ -92,17 +110,22 @@ public class PlayerController : MonoBehaviour
 
         if (IsSwitching)
         {
-            state = "Transformation";
+            state = switching;
         }
 
         if (IsGliding)
         {
-            state = "Mage_Gliding";
+            state = gliding;
+        }
+
+        if (IsDashing && IsGrounded())
+        {
+            state = dashing;
         }
         SetAnimation(state);
     }
 
-    void SetAnimation(string newState)
+    private void SetAnimation(string newState)
     {
         if (currentState != newState)
         {
@@ -111,7 +134,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void UpdateCharacterState()
+    private void UpdateCharacterState()
     {
         SwitchCharacter();
         switch (characterState)
@@ -125,7 +148,6 @@ public class PlayerController : MonoBehaviour
                 falling = "Mage_Falling";
                 break;
             case CharacterState.slinger:
-                Dash();
                 Swing();
 
                 idle = "Slinger_Idle";
@@ -133,32 +155,60 @@ public class PlayerController : MonoBehaviour
                 jumping = "Slinger_Jumping";
                 falling = "Slinger_Falling";
                 break;
+            case CharacterState.warrior:
+                Dash();
+
+                idle = "Warrior_Idle";
+                running = "Warrior_Running";
+                jumping = "Warrior_Jumping";
+                falling = "Warrior_Falling";
+                break;
         }
     }
 
-    void SwitchCharacter()
+    private void SwitchCharacter()
     {
-        if (Input.GetButtonDown(Switch))
+        if (!IsDashing && !IsGliding && !IsSwinging && !IsSwitching)
         {
-            IsSwitching = true;
-            if (characterState == CharacterState.mage)
+            if (Input.GetButtonDown("SwitchL"))
             {
-                characterState = CharacterState.slinger;
-                Debug.Log("slinger");
-            }
-            else if (characterState == CharacterState.slinger)
-            {
-                characterState = CharacterState.mage;
-                Debug.Log("mage");
-            }
-            Debug.Log("a");
+                switch (characterState)
+                {
+                    case CharacterState.mage:
+                        characterState = CharacterState.slinger;
+                        break;
+                    case CharacterState.slinger:
+                        characterState = CharacterState.warrior;
+                        break;
+                    case CharacterState.warrior:
+                        characterState = CharacterState.mage;
+                        break;
+                }
+                IsSwitching = true;
+                Debug.Log(characterState);
 
-            if(IsSwitching)
-            {
-                // Freeze();
+                Invoke("EndSwitching", switchTimer);
             }
 
-            Invoke("EndSwitching", switchTimer);
+            if (Input.GetButtonDown("SwitchR"))
+            {
+                switch (characterState)
+                {
+                    case CharacterState.mage:
+                        characterState = CharacterState.warrior;
+                        break;
+                    case CharacterState.slinger:
+                        characterState = CharacterState.mage;
+                        break;
+                    case CharacterState.warrior:
+                        characterState = CharacterState.slinger;
+                        break;
+                }
+                IsSwitching = true;
+                Debug.Log(characterState);
+
+                Invoke("EndSwitching", switchTimer);
+            }
         }
     }
 
@@ -177,15 +227,36 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        dirX = Input.GetAxisRaw("Horizontal");
-        ////runner mode
-        rigidBody.velocity = new Vector2(moveSpeed * dashSpeed, rigidBody.velocity.y);
+        float targetSpeed = moveSpeed;
+        float speedDif = targetSpeed - rigidBody.velocity.x;
+        float accelRate = (Mathf.Abs(targetSpeed) > rigidBody.velocity.x) ? acceleration : decceleration;
+        float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
+        rigidBody.AddForce(movement * Vector2.right);
+        // runner mode
+        // rigidBody.velocity = new Vector2(moveSpeed * dashSpeed, rigidBody.velocity.y);
+        // normal mode
+        // dirX = Input.GetAxisRaw("Horizontal");
+        // rigidBody.velocity = new Vector2(moveSpeed * dirX * dashSpeed, rigidBody.velocity.y);
+    }
 
-        //normal mode
-        //rigidBody.velocity = new Vector2(moveSpeed * dirX * dashSpeed, rigidBody.velocity.y);
-        if (Input.GetButtonDown(Jump) && IsGrounded())
+    private void Jump()
+    {
+        lastGroundedTime -= Time.deltaTime;
+
+        if (Input.GetButtonDown("Jump") && (lastGroundedTime > 0))
         {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
+            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            lastJumpedTime = canJumpTimer;
+        }
+
+        if (Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0.1f)
+        {
+            rigidBody.AddForce(Vector2.down * rigidBody.velocity.y * (1- cutJumpHeight), ForceMode2D.Impulse);
+        }
+
+        if (IsGrounded())
+        {
+            lastGroundedTime = canJumpTimer;
         }
     }
 
@@ -194,32 +265,32 @@ public class PlayerController : MonoBehaviour
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, 0.1f, jumpableGround);
     }
 
-    public void Glide() 
+    private void Glide() 
     {
         if (IsGliding && rigidBody.velocity.y < 0f && Mathf.Abs(rigidBody.velocity.y) > m_FallSpeed)
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Sign(rigidBody.velocity.y) * m_FallSpeed);
 
-        if (Input.GetButtonDown(Skill1) && !IsGrounded())
+        if (Input.GetButtonDown("Skill1") && !IsGrounded())
         {
             IsGliding = true;
         }
 
-        if (Input.GetButtonUp(Skill1) && !IsGrounded() || IsGrounded())
+        if (Input.GetButtonUp("Skill1") && !IsGrounded() || IsGrounded())
         {
             IsGliding = false;
         }
     }
 
-    public void Dash()
+    private void Dash()
     {
         switch (dashState)
         {
             case DashState.Ready:
-                if (Input.GetButtonDown(Skill1) && IsGrounded())
+                if (Input.GetButtonDown("Skill1") && IsGrounded())
                 {
-                    savedVelocity = rigidBody.velocity;
-                    //rigidBody.velocity = new Vector2(rigidBody.velocity.x * 3f, rigidBody.velocity.y);
-                    dashSpeed = 3;
+                    //savedVelocity = rigidBody.velocity;
+                    rigidBody.velocity = new Vector2(rigidBody.velocity.x * dashSpeed, rigidBody.velocity.y);
+                    IsDashing = true;
                     dashState = DashState.Dashing;
                     Debug.Log("ready");
                 }
@@ -230,8 +301,8 @@ public class PlayerController : MonoBehaviour
                 {
                     dashTimer = maxDash;
                     //rigidBody.velocity = savedVelocity;
-                    dashSpeed = 1;
                     dashState = DashState.Cooldown;
+                    IsDashing = false;
                     Debug.Log("dashing");
                 }
                 break;
@@ -241,47 +312,44 @@ public class PlayerController : MonoBehaviour
                 {
                     dashTimer = 0;
                     dashState = DashState.Ready;
+                    IsDashing = false;
                     Debug.Log("cooldown");
                 }
                 break;
         }
     }
 
-    public void Swing()
+    private void Swing()
     {
-        if (Input.GetButtonDown(Skill2) && closestTargetDetector.target != null)
+        if (Input.GetButtonDown("Skill1") && closestTargetDetector.target != null && closestTargetDetector.target.position.x > rigidBody.position.x && !IsGrounded())
         {
             Vector2 targetPosition = closestTargetDetector.target.transform.position;
-
             line.SetPosition(0, targetPosition);
             line.SetPosition(1, transform.position);
             distanceJoint.connectedAnchor = targetPosition;
             distanceJoint.enabled = true;
             line.enabled = true;
             closestTargetDetector.arrow.SetActive(false);
+            IsSwinging = true;
             Debug.Log("swingin'");
         }
-        else if (Input.GetButtonUp(Skill2))
+        else if ((Input.GetButtonUp("Skill1") || swingTimer < 0 || IsGrounded()) && IsSwinging)
         {
             distanceJoint.enabled = false;
             line.enabled = false;
+            IsSwinging = false;
+            rigidBody.AddForce(swingBoost * rigidBody.velocity, ForceMode2D.Impulse);
             Debug.Log("not swingin'");
         }
+
+        if (!IsSwinging) swingTimer = maxSwing;
 
         if (distanceJoint.enabled)
         {
             line.SetPosition(1, transform.position);
+            distanceJoint.distance -= Time.deltaTime * 3;
+            swingTimer -= Time.deltaTime;
         }
-    }
-
-    private void Freeze()
-    {
-        Time.timeScale = 0;
-    }
-
-    private void Unfreeze()
-    {
-        Time.timeScale = 1;
     }
 }
 
@@ -294,5 +362,5 @@ public enum DashState
 
 public enum CharacterState 
 { 
-    mage, slinger 
+    mage, slinger, warrior 
 }

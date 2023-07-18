@@ -18,7 +18,7 @@ public class DialogueBaseClass : MonoBehaviour
         }
 
         //yield return new WaitForSeconds(delayBetweenLines);
-        yield return new WaitUntil(()=> Input.GetButtonDown("Jump"));
+        yield return new WaitUntil(()=> Input.GetButtonDown("Fire1"));
         finished = true;
     }
 }
