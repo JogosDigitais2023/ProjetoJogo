@@ -10,6 +10,7 @@ public class ClosestTargetDetector : MonoBehaviour
     public Transform detectionPoint;
     public LayerMask detectionLayer;
     public Transform target;
+    public GameObject targetObject;
     public GameObject arrow;
 
     private void Update()
@@ -23,11 +24,13 @@ public class ClosestTargetDetector : MonoBehaviour
         if (collider)
         {
             target = collider.transform;
+            targetObject = collider.gameObject;
             PointArrow(target);
         }
         else
         {
             target = null;
+            targetObject = null;
             arrow.SetActive(false);
         }
     }

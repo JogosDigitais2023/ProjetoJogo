@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private LineRenderer line;
     private DistanceJoint2D distanceJoint;
     private ClosestTargetDetector closestTargetDetector;
+    public GameOverScreen GameOverScreen;
 
     // Checadores de estado
     public bool IsGliding { get; set; } = false;
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private float maxDash = 1f;
     private float lastJumpedTime = 0;
     private float lastGroundedTime = 0;
+    private bool canBreakWall = false;
     
     // Enums
     private DashState dashState;
@@ -317,11 +319,40 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+
+        if(IsDashing && canBreakWall)
+        {
+            Destroy(closestTargetDetector.targetObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (closestTargetDetector.target != null)
+        {
+            if (closestTargetDetector.target.tag == "Wall" && collision.gameObject.tag == "Wall") 
+            { 
+                canBreakWall = true; 
+            }
+        }
+
+        if (collision.gameObject.tag == "DeathZone")
+        {
+            GameOverScreen.Setup();
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Wall")
+        {
+            canBreakWall = false;
+        }
     }
 
     private void Swing()
     {
-        if (Input.GetButtonDown("Skill1") && closestTargetDetector.target != null && closestTargetDetector.target.position.x > rigidBody.position.x && !IsGrounded())
+        if (Input.GetButtonDown("Skill1") && closestTargetDetector.target != null && closestTargetDetector.target.position.x > rigidBody.position.x && closestTargetDetector.target.tag == "Swinger" && !IsGrounded())
         {
             Vector2 targetPosition = closestTargetDetector.target.transform.position;
             line.SetPosition(0, targetPosition);
