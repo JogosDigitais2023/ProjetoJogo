@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public bool IsJumping { get; set; } = false;
     public bool IsSwinging { get; set; } = false;
 
-    // Parâmetros de jogo
+    // Parï¿½metros de jogo
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private float canJumpTimer = 0.1f;
     [SerializeField] private float moveSpeed = 10f;
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashSpeed = 5f;
     [SerializeField] private float swingBoost = 1.5f;
 
-    // Variáveis auxiliares
+    // Variï¿½veis auxiliares
     private float dirX;
     private Vector2 savedVelocity;
     private float swingTimer = 0f;
@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     private DashState dashState;
     private CharacterState characterState;
 
-    // Animações
+    // Animaï¿½ï¿½es
     private string idle;
     private string running;
     private string jumping;
@@ -243,6 +243,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        // print("gt: " + lastGroundedTime + " deltaTime: " + Time.deltaTime + " " + Input.GetButtonDown("Jump"));
         lastGroundedTime -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump") && (lastGroundedTime > 0))
