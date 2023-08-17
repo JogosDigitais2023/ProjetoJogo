@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     
     // Enums
     private DashState dashState;
-    private CharacterState characterState;
+    public CharacterState characterState;
 
     // Anima��es
     private string idle;
@@ -362,7 +362,9 @@ public class PlayerController : MonoBehaviour
             distanceJoint.enabled = false;
             line.enabled = false;
             IsSwinging = false;
-            rigidBody.AddForce(swingBoost * rigidBody.velocity, ForceMode2D.Impulse);
+            if(!IsGrounded()) {
+                rigidBody.AddForce(swingBoost * rigidBody.velocity, ForceMode2D.Impulse);
+            }
             Debug.Log("not swingin'");
         }
 
