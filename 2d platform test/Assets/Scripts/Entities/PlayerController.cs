@@ -172,40 +172,27 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsDashing && !IsGliding && !IsSwinging && !IsSwitching)
         {
-            if (Input.GetButtonDown("SwitchL"))
+            if (Input.GetButtonDown("Switch1") && characterState != CharacterState.mage)
             {
-                switch (characterState)
-                {
-                    case CharacterState.mage:
-                        characterState = CharacterState.slinger;
-                        break;
-                    case CharacterState.slinger:
-                        characterState = CharacterState.warrior;
-                        break;
-                    case CharacterState.warrior:
-                        characterState = CharacterState.mage;
-                        break;
-                }
+                characterState = CharacterState.mage;
                 IsSwitching = true;
                 Debug.Log(characterState);
 
                 Invoke("EndSwitching", switchTimer);
             }
 
-            if (Input.GetButtonDown("SwitchR"))
+            if (Input.GetButtonDown("Switch2") && characterState != CharacterState.slinger)
             {
-                switch (characterState)
-                {
-                    case CharacterState.mage:
-                        characterState = CharacterState.warrior;
-                        break;
-                    case CharacterState.slinger:
-                        characterState = CharacterState.mage;
-                        break;
-                    case CharacterState.warrior:
-                        characterState = CharacterState.slinger;
-                        break;
-                }
+                characterState = CharacterState.slinger;
+                IsSwitching = true;
+                Debug.Log(characterState);
+
+                Invoke("EndSwitching", switchTimer);
+            }
+
+            if (Input.GetButtonDown("Switch3") && characterState != CharacterState.warrior)
+            {
+                characterState = CharacterState.warrior;
                 IsSwitching = true;
                 Debug.Log(characterState);
 
@@ -250,6 +237,7 @@ public class PlayerController : MonoBehaviour
         {
             rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             lastJumpedTime = canJumpTimer;
+            AudioManager.Instance.PlaySFX("Jump");
         }
 
         if (Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0.1f)
@@ -276,6 +264,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Skill1") && !IsGrounded())
         {
             IsGliding = true;
+            AudioManager.Instance.PlaySFX("Glide");
         }
 
         if (Input.GetButtonUp("Skill1") && !IsGrounded() || IsGrounded())
@@ -295,6 +284,7 @@ public class PlayerController : MonoBehaviour
                     rigidBody.velocity = new Vector2(rigidBody.velocity.x * dashSpeed, rigidBody.velocity.y);
                     IsDashing = true;
                     dashState = DashState.Dashing;
+                    AudioManager.Instance.PlaySFX("Dash");
                     Debug.Log("ready");
                 }
                 break;
@@ -324,6 +314,7 @@ public class PlayerController : MonoBehaviour
         if(IsDashing && canBreakWall)
         {
             Destroy(closestTargetDetector.targetObject);
+            AudioManager.Instance.PlaySFX("Wall Break");
         }
     }
 
@@ -364,6 +355,7 @@ public class PlayerController : MonoBehaviour
             closestTargetDetector.arrow.SetActive(false);
             IsSwinging = true;
             Debug.Log("swingin'");
+            AudioManager.Instance.PlaySFX("Swing");
         }
         else if ((Input.GetButtonUp("Skill1") || swingTimer < 0 || IsGrounded()) && IsSwinging)
         {
