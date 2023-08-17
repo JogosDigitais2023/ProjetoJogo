@@ -172,40 +172,27 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsDashing && !IsGliding && !IsSwinging && !IsSwitching)
         {
-            if (Input.GetButtonDown("SwitchL"))
+            if (Input.GetButtonDown("Switch1"))
             {
-                switch (characterState)
-                {
-                    case CharacterState.mage:
-                        characterState = CharacterState.slinger;
-                        break;
-                    case CharacterState.slinger:
-                        characterState = CharacterState.warrior;
-                        break;
-                    case CharacterState.warrior:
-                        characterState = CharacterState.mage;
-                        break;
-                }
+                characterState = CharacterState.mage;
                 IsSwitching = true;
                 Debug.Log(characterState);
 
                 Invoke("EndSwitching", switchTimer);
             }
 
-            if (Input.GetButtonDown("SwitchR"))
+            if (Input.GetButtonDown("Switch2"))
             {
-                switch (characterState)
-                {
-                    case CharacterState.mage:
-                        characterState = CharacterState.warrior;
-                        break;
-                    case CharacterState.slinger:
-                        characterState = CharacterState.mage;
-                        break;
-                    case CharacterState.warrior:
-                        characterState = CharacterState.slinger;
-                        break;
-                }
+                characterState = CharacterState.slinger;
+                IsSwitching = true;
+                Debug.Log(characterState);
+
+                Invoke("EndSwitching", switchTimer);
+            }
+
+            if (Input.GetButtonDown("Switch3"))
+            {
+                characterState = CharacterState.warrior;
                 IsSwitching = true;
                 Debug.Log(characterState);
 
