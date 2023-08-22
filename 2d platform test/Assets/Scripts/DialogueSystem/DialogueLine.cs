@@ -13,6 +13,7 @@ public class DialogueLine : DialogueBaseClass
     [SerializeField] private float delayBetweenLines;
     [SerializeField] private Sprite characterSprite;
     [SerializeField] private Image imageHolder;
+    [SerializeField] private string sound;
 
     private TextMeshProUGUI textHolder;
 
@@ -26,7 +27,7 @@ public class DialogueLine : DialogueBaseClass
 
     private void Start()
     {
-        StartCoroutine(WriteText(input, textHolder, color, font, delay, delayBetweenLines));
+        StartCoroutine(WriteText(input, textHolder, color, font, delay, delayBetweenLines, sound));
     }
 }
  

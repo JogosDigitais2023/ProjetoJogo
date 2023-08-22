@@ -300,7 +300,7 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
             case DashState.Cooldown:
-                dashTimer -= Time.deltaTime;
+                dashTimer -= Time.deltaTime * 2;
                 if (dashTimer <= 0)
                 {
                     dashTimer = 0;
