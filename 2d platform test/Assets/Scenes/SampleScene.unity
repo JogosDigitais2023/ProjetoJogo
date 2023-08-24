@@ -1707,7 +1707,7 @@ GameObject:
   - component: {fileID: 455518619}
   - component: {fileID: 455518618}
   - component: {fileID: 455518617}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: opcoes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1865,7 +1865,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 329.8, y: -188}
+  m_AnchoredPosition: {x: -71.59375, y: 3.9100037}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &499304287
@@ -132146,8 +132146,9 @@ RectTransform:
   - {fileID: 1085776076}
   - {fileID: 1683521687}
   - {fileID: 1286680635}
+  - {fileID: 1363492226}
   m_Father: {fileID: 1026918383}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -132935,7 +132936,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 473, y: -188}
+  m_AnchoredPosition: {x: 71.60632, y: 3.9100037}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &964749334
@@ -133070,11 +133071,10 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1444024171}
-  - {fileID: 1363492226}
   - {fileID: 1799941438}
   - {fileID: 689197259}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -133093,10 +133093,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 197d5925e7a7f8641828014368e81efb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageMage: {fileID: 0}
-  imageSlinger: {fileID: 0}
-  imageWarrior: {fileID: 0}
-  player: {fileID: 0}
   options: {fileID: 1286680634}
   pause: {fileID: 689197258}
   musicSlider: {fileID: 272344254}
@@ -133386,7 +133382,7 @@ GameObject:
   - component: {fileID: 1085776079}
   - component: {fileID: 1085776078}
   - component: {fileID: 1085776077}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: sair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133854,7 +133850,7 @@ GameObject:
   - component: {fileID: 1254827181}
   - component: {fileID: 1254827180}
   - component: {fileID: 1254827179}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: voltar ao jogo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134098,7 +134094,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 401.6, y: -188}
+  m_AnchoredPosition: {x: 0.20632935, y: 3.9100037}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1296704639
@@ -134250,15 +134246,15 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363492225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 293178345}
   - {fileID: 1754808959}
-  m_Father: {fileID: 1026918383}
-  m_RootOrder: 1
+  m_Father: {fileID: 689197259}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -134734,7 +134730,7 @@ Transform:
   - {fileID: 1929257096}
   - {fileID: 906738565}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1683521686
 GameObject:
@@ -135225,7 +135221,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1799941438}
-  - component: {fileID: 1799941439}
   m_Layer: 5
   m_Name: Selected Character
   m_TagString: Untagged
@@ -135249,33 +135244,13 @@ RectTransform:
   - {fileID: 1296704638}
   - {fileID: 499304286}
   m_Father: {fileID: 1026918383}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 339, y: -218.91}
+  m_SizeDelta: {x: 215.911, y: 82.175}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1799941439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799941437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 197d5925e7a7f8641828014368e81efb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageMage: {fileID: 0}
-  imageSlinger: {fileID: 0}
-  imageWarrior: {fileID: 0}
-  player: {fileID: 0}
-  options: {fileID: 0}
-  pause: {fileID: 0}
-  musicSlider: {fileID: 0}
-  sfxSlider: {fileID: 0}
 --- !u!1 &1810294642
 GameObject:
   m_ObjectHideFlags: 0
