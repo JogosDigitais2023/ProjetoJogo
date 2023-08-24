@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image imageWarrior;
     [SerializeField] private PlayerController player;
     [SerializeField] private GameObject options;
+    [SerializeField] private GameObject pause;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
 
@@ -35,6 +36,11 @@ public class UIManager : MonoBehaviour
         //         imageWarrior.color = new Color(1,1,1);
         //         break;
         // }
+    }
+
+    private void Update()
+    {
+        PauseGame();
     }
 
     public void StartGame()
@@ -76,4 +82,33 @@ public class UIManager : MonoBehaviour
         AudioManager.Instance.SFXVolume(sfxSlider.value);
     }
 
+    public void PauseGame()
+    {
+        if (!SceneManager.GetActiveScene().Equals("Menu"))
+        {
+            if (!pause.gameObject.activeSelf)
+            {
+                Time.timeScale = 1f;
+                if (Input.GetKeyDown("escape"))
+                {
+                    pause.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                Time.timeScale = 0f;
+                if (Input.GetKeyDown("escape"))
+                {
+                    pause.gameObject.SetActive(false);
+                    options.gameObject.SetActive(false);
+                }
+            }
+        }
+        
+    }
+    public void UnpauseGame()
+    {
+        pause.gameObject.SetActive(false);
+        options.gameObject.SetActive(false);
+    }
 }

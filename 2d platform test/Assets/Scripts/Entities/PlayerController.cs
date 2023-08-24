@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float velPower = 1f;
     [SerializeField] private float dashSpeed = 5f;
     [SerializeField] private float swingBoost = 1.5f;
+    [SerializeField] private GameObject pauseMenu;
 
     // Vari�veis auxiliares
     private float dirX;
@@ -77,11 +78,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        UpdateCharacterState();
-        Movement();
-        Jump();
-        Respawn();
-        UpdateAnimationState();
+        if(!pauseMenu.gameObject.activeSelf) 
+        {
+            UpdateCharacterState();
+            Movement();
+            Jump();
+            Respawn();
+            UpdateAnimationState();
+        }
     }
 
     private void UpdateAnimationState()
