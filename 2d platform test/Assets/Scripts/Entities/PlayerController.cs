@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public bool IsJumping { get; set; } = false;
     public bool IsSwinging { get; set; } = false;
 
-    // Parâmetros de jogo
+    // Parï¿½metros de jogo
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private float canJumpTimer = 0.1f;
     [SerializeField] private float moveSpeed = 10f;
@@ -35,8 +35,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float velPower = 1f;
     [SerializeField] private float dashSpeed = 5f;
     [SerializeField] private float swingBoost = 1.5f;
+    [SerializeField] private GameObject pauseMenu;
 
-    // Variáveis auxiliares
+    // Variï¿½veis auxiliares
     private float dirX;
     private Vector2 savedVelocity;
     private float swingTimer = 0f;
@@ -48,9 +49,9 @@ public class PlayerController : MonoBehaviour
     
     // Enums
     private DashState dashState;
-    private CharacterState characterState;
+    public CharacterState characterState;
 
-    // Animações
+    // Animaï¿½ï¿½es
     private string idle;
     private string running;
     private string jumping;
@@ -77,11 +78,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        UpdateCharacterState();
-        Movement();
-        Jump();
-        Respawn();
-        UpdateAnimationState();
+        if(!pauseMenu.gameObject.activeSelf) 
+        {
+            UpdateCharacterState();
+            Movement();
+            Jump();
+            Respawn();
+            UpdateAnimationState();
+        }
     }
 
     private void UpdateAnimationState()
@@ -172,7 +176,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsDashing && !IsGliding && !IsSwinging && !IsSwitching)
         {
-            if (Input.GetButtonDown("Switch1"))
+            if (Input.GetButtonDown("Switch1") && characterState != CharacterState.mage)
             {
                 characterState = CharacterState.mage;
                 IsSwitching = true;
@@ -180,8 +184,7 @@ public class PlayerController : MonoBehaviour
 
                 Invoke("EndSwitching", switchTimer);
             }
-
-            if (Input.GetButtonDown("Switch2"))
+            if (Input.GetButtonDown("Switch2") && characterState != CharacterState.slinger)
             {
                 characterState = CharacterState.slinger;
                 IsSwitching = true;
@@ -189,8 +192,7 @@ public class PlayerController : MonoBehaviour
 
                 Invoke("EndSwitching", switchTimer);
             }
-
-            if (Input.GetButtonDown("Switch3"))
+            if (Input.GetButtonDown("Switch3") && characterState != CharacterState.warrior)
             {
                 characterState = CharacterState.warrior;
                 IsSwitching = true;
@@ -230,12 +232,14 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        // print("gt: " + lastGroundedTime + " deltaTime: " + Time.deltaTime + " " + Input.GetButtonDown("Jump"));
         lastGroundedTime -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump") && (lastGroundedTime > 0))
         {
             rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             lastJumpedTime = canJumpTimer;
+            AudioManager.Instance.PlaySFX("Jump");
         }
 
         if (Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0.1f)
@@ -262,6 +266,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Skill1") && !IsGrounded())
         {
             IsGliding = true;
+            AudioManager.Instance.PlaySFX("Glide");
         }
 
         if (Input.GetButtonUp("Skill1") && !IsGrounded() || IsGrounded())
@@ -281,6 +286,7 @@ public class PlayerController : MonoBehaviour
                     rigidBody.velocity = new Vector2(rigidBody.velocity.x * dashSpeed, rigidBody.velocity.y);
                     IsDashing = true;
                     dashState = DashState.Dashing;
+                    AudioManager.Instance.PlaySFX("Dash");
                     Debug.Log("ready");
                 }
                 break;
@@ -296,7 +302,7 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
             case DashState.Cooldown:
-                dashTimer -= Time.deltaTime;
+                dashTimer -= Time.deltaTime * 2;
                 if (dashTimer <= 0)
                 {
                     dashTimer = 0;
@@ -310,6 +316,7 @@ public class PlayerController : MonoBehaviour
         if(IsDashing && canBreakWall)
         {
             Destroy(closestTargetDetector.targetObject);
+            AudioManager.Instance.PlaySFX("Wall Break");
         }
     }
 
@@ -350,13 +357,16 @@ public class PlayerController : MonoBehaviour
             closestTargetDetector.arrow.SetActive(false);
             IsSwinging = true;
             Debug.Log("swingin'");
+            AudioManager.Instance.PlaySFX("Swing");
         }
         else if ((Input.GetButtonUp("Skill1") || swingTimer < 0 || IsGrounded()) && IsSwinging)
         {
             distanceJoint.enabled = false;
             line.enabled = false;
             IsSwinging = false;
-            rigidBody.AddForce(swingBoost * rigidBody.velocity, ForceMode2D.Impulse);
+            if(!IsGrounded()) {
+                rigidBody.AddForce(swingBoost * rigidBody.velocity, ForceMode2D.Impulse);
+            }
             Debug.Log("not swingin'");
         }
 

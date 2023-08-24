@@ -25,7 +25,7 @@ public class ClosestTargetDetector : MonoBehaviour
         {
             target = collider.transform;
             targetObject = collider.gameObject;
-            PointArrow(target);
+            //PointArrow(target);
         }
         else
         {
