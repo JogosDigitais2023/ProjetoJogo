@@ -184,7 +184,6 @@ public class PlayerController : MonoBehaviour
 
                 Invoke("EndSwitching", switchTimer);
             }
-
             if (Input.GetButtonDown("Switch2") && characterState != CharacterState.slinger)
             {
                 characterState = CharacterState.slinger;
@@ -193,7 +192,6 @@ public class PlayerController : MonoBehaviour
 
                 Invoke("EndSwitching", switchTimer);
             }
-
             if (Input.GetButtonDown("Switch3") && characterState != CharacterState.warrior)
             {
                 characterState = CharacterState.warrior;
