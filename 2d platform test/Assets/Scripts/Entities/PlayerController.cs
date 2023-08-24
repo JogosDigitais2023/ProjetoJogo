@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -332,6 +333,22 @@ public class PlayerController : MonoBehaviour
         {
             GameOverScreen.Setup();
         }
+
+        if (collision.gameObject.tag == "FinishIntro")
+        {
+            SceneManager.LoadScene("RinoLevel");
+        }
+
+        if (collision.gameObject.tag == "enemy")
+        {
+            GameOverScreen.Setup();
+        }
+
+        if (collision.gameObject.tag == "FinishRino")
+        {
+            SceneManager.LoadScene("LionLevel");
+        }
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
