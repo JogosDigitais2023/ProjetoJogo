@@ -8,6 +8,10 @@ TagManager:
   - Wall
   - Swinger
   - DeathZone
+  - FinishIntro
+  - enemy
+  - FinishRino
+  - WinGame
   layers:
   - Default
   - TransparentFX
