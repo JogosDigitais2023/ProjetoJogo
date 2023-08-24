@@ -50,6 +50,7 @@ public class UIManager : MonoBehaviour
 
     public void ExitGame()
     {
+        Debug.Log("exit");
         Application.Quit();
     }
     public void Options()
@@ -108,6 +109,7 @@ public class UIManager : MonoBehaviour
     }
     public void UnpauseGame()
     {
+        Debug.Log("unpause");
         pause.gameObject.SetActive(false);
         options.gameObject.SetActive(false);
     }

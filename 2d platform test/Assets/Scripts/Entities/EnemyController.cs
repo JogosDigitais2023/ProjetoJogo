@@ -41,7 +41,7 @@ public class EnemyController : MonoBehaviour
     {
         bool result = IsGrounded();
         estaNoChao = result;
-        Debug.Log("Esta no chao: " + result);
+        //Debug.Log("Esta no chao: " + result);
     }
 
     private bool IsGrounded()

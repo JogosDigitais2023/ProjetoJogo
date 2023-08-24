@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/RinoLevel.unity
+    guid: d3d9663c1878aca4ca6290f8ba44c849
+  - enabled: 1
+    path: Assets/Scenes/LionLevel.unity
+    guid: ceea5bff2aae2e34b8eed17b4d65d3bf
   m_configObjects: {}
