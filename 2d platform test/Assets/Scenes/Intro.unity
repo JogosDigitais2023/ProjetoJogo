@@ -747,7 +747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd6feb47cc411e41ae645c158e5ec95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  input: Suri! ## A Selva depende de voces!
+  input: Suri! ## A Selva depende de voces! #####$
   color: {r: 1, g: 1, b: 1, a: 1}
   font: {fileID: 11400000, guid: fee207d318201f641a90bca3c2141808, type: 2}
   delay: 0.08
